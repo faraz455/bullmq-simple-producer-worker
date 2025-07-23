@@ -1,6 +1,6 @@
 # BullMQ-Simple-Producer-Worker 🚀
 
-A clean and focused NestJS module demonstrating background job processing using BullMQ and Redis.
+A streamlined and production-ready NestJS module demonstrating **background job processing** using **BullMQ** and **Redis**.
 
 ---
 
@@ -8,28 +8,28 @@ A clean and focused NestJS module demonstrating background job processing using 
 
 ```
 src/
-├─queue
-  ├─ queue.service.ts           # QueueService – produces jobs
-  ├─ queue.processor.ts         # QueueProcessor – consumes jobs
-  ├─ queue.controller.ts        # QueueController – HTTP endpoint to add jobs
-  ├─ redis.factory.ts           # createRedisConnection helper
+├─ queue/
+│  ├─ queue.service.ts        # QueueService – responsible for producing jobs
+│  ├─ queue.processor.ts      # QueueProcessor – consumes and processes jobs
+│  ├─ queue.controller.ts     # QueueController – HTTP endpoint to add jobs
+│  ├─ redis.factory.ts        # Redis connection helper
 ```
 
 ---
 
 ## 🧰 Features
 
-- `POST /queue/add-job` endpoint to queue jobs with optional delay.
-- Background worker processes jobs, logging job IDs and data.
-- Listeners for `completed` and `failed` job events.
-- Redis container configured via `docker-compose`.
-- Clean shutdown on Nest app termination.
+- `POST /queue/add-job` endpoint to queue jobs with an optional delay.
+- **QueueProcessor** handles job processing — customize your logic here.
+- Event listeners for `completed` and `failed` jobs.
+- Graceful shutdown on NestJS application termination.
+- **Swagger integrated** at `http://localhost:3000/swagger` — explore endpoints and test job submissions.
 
 ---
 
 ## 📦 Redis Setup
 
-Include in `docker-compose.yml`:
+Add the following to your `docker-compose.yml`:
 
 ```yaml
 services:
@@ -47,13 +47,13 @@ services:
       - net-db
 ```
 
-This ensures persistent Redis storage with append-only file persistence.
+This configuration ensures persistent storage with Redis' append-only file (AOF) enabled.
 
 ---
 
 ## ⚙️ Getting Started
 
-### 1. Install
+### 1. Install Dependencies
 
 ```bash
 yarn install
@@ -61,26 +61,24 @@ yarn install
 
 ### 2. Configure Redis
 
-Create `.env` and update from `.env.template`:
+Create a `.env` file from the provided `.env.template`:
 
-```
+```env
 REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
 
-### 3. Launch Redis
+### 3. Start Redis
 
 ```bash
 docker-compose up -d redis
 ```
 
-### 4. Run Nest App
+### 4. Run the NestJS App
 
 ```bash
 yarn start:dev
 ```
-
-This includes your queue module coordinator.
 
 ---
 
@@ -88,7 +86,7 @@ This includes your queue module coordinator.
 
 ### Add a Job
 
-Send a `POST` request:
+Use the `POST /queue/add-job` endpoint:
 
 ```http
 POST http://localhost:3000/queue/add-job
@@ -100,7 +98,7 @@ Content-Type: application/json
 }
 ```
 
-**Response:**
+**Response Example:**
 
 ```json
 {
@@ -111,44 +109,55 @@ Content-Type: application/json
 }
 ```
 
-Delayed enqueue ensures job execution after 5 seconds (via Redis TTL).
+You can also use Swagger to send the request and inspect the schema at:
+
+```
+http://localhost:3000/swagger
+```
+
+> Here, you can interactively test your job submission, set custom data, and define execution time.
 
 ---
 
-### Background Processing
+### 🔄 Background Job Processing
 
-Your `QueueProcessor` automatically spins up:
+The `QueueProcessor` listens for jobs and performs the logic defined inside `queue.processor.ts`.
 
-- Logs upon job processing ❗
-- On success: `completed` listener
-- On failure: `failed` listener
+**You can define any custom logic inside `QueueProcessor` to handle job execution.**
+
+- Job is processed automatically after the specified delay.
+- Success/failure events are logged using BullMQ event listeners.
 
 ---
 
-## 🕒 Job Lifecycle Timing
+## 🕒 Job Lifecycle
 
-1. Endpoint enqueues job with optional delay.
-2. Redis stores job.
-3. Worker fetches and processes after `delayMs`.
-4. Completion/fail events are logged.
-
-You can track **scheduled time** via the `scheduledFor` timestamp in the API response.
+1. Job is added via `/queue/add-job` (API or Swagger).
+2. Redis stores the job with the specified delay.
+3. `QueueProcessor` picks up the job after the delay.
+4. Job logic is executed.
+5. Completion or failure is logged accordingly.
 
 ---
 
 ## 🔗 Summary
 
-You're now equipped with a scalable, effective BullMQ background worker pattern in NestJS—complete with Redis persistence, job persistence, event handling, and production-grade reliability. Perfect as a standalone portfolio example or microservice blueprint!
+This template provides a clean and scalable BullMQ-based background job processing system using NestJS and Redis.
+
+- Modular and easy to extend
+- Supports delayed job execution
+- Built-in Swagger support for testing and visibility
+- Ideal for microservices, task queues, scheduled tasks, or notification systems
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Refer to [contribution guidlines](./docs/CONTRIBUTING.md) and [coding convntions](./docs/CODING_CONVENTIONS.md) and [code of conduct](./CODE_OF_CONDUCT.md).
+See our [Contribution Guidelines](./docs/CONTRIBUTING.md), [Coding Conventions](./docs/CODING_CONVENTIONS.md), and [Code of Conduct](./CODE_OF_CONDUCT.md) to get started.
 
 ---
 
-## Stay in Touch
+## 🙋‍♂️ Stay Connected
 
-- **LinkedIn Profile**: [Muhammad Faraz Khan](https://www.linkedin.com/in/farazkhan455/)
-- **GitHub Profile**: [Muhammad Faraz Khan](https://github.com/faraz455)
+- **LinkedIn**: [Muhammad Faraz Khan](https://www.linkedin.com/in/farazkhan455/)
+- **GitHub**: [@faraz455](https://github.com/faraz455)
