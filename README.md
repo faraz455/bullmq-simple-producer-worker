@@ -4,6 +4,14 @@ A streamlined and production-ready NestJS module demonstrating **background job 
 
 ---
 
+## 🎥 Demo Video
+
+▶️ [**Watch the Demo on Google Drive**](https://drive.google.com/file/d/1U5UzgMYvShMOwsP_Rb2pHjQmf4UK1JjF/view?usp=sharing)
+
+> This video walks through the setup, how to add a job, and how the background processor works.
+
+---
+
 ## 📁 Directory Structure
 
 ```
